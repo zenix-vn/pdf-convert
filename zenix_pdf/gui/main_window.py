@@ -139,9 +139,15 @@ class MainWindow(QMainWindow):
         self.cb_multi.setToolTip(
             "Dùng nhiều nhân CPU. Khi bật, thanh tiến trình theo trang sẽ không cập nhật."
         )
+        self.cb_ocr = QCheckBox("Nhận dạng chữ (OCR) cho PDF dạng ảnh")
+        self.cb_ocr.setToolTip(
+            "Áp dụng cho trang scan/ảnh chụp hoặc chữ đã bị chuyển thành đường vector.\n"
+            "Chậm hơn (vài giây mỗi trang); nên soát lại chính tả sau khi chuyển."
+        )
         cb_row = QHBoxLayout()
         cb_row.addWidget(self.cb_overwrite)
         cb_row.addWidget(self.cb_multi)
+        cb_row.addWidget(self.cb_ocr)
         cb_row.addStretch(1)
         grid.addLayout(cb_row, 2, 1)
 
@@ -239,6 +245,7 @@ class MainWindow(QMainWindow):
         self.ed_output.setText(s.output_dir)
         self.cb_overwrite.setChecked(s.overwrite)
         self.cb_multi.setChecked(s.multi_processing)
+        self.cb_ocr.setChecked(s.ocr)
         if s.geometry is not None:
             self.restoreGeometry(s.geometry)
 
@@ -248,6 +255,7 @@ class MainWindow(QMainWindow):
         s.output_dir = self.ed_output.text().strip()
         s.overwrite = self.cb_overwrite.isChecked()
         s.multi_processing = self.cb_multi.isChecked()
+        s.ocr = self.cb_ocr.isChecked()
         s.geometry = self.saveGeometry()
 
     # ------------------------------------------------------------- state
@@ -314,7 +322,9 @@ class MainWindow(QMainWindow):
                 self.model.add_job(job)
                 msg = f"Đã thêm: {pdf.name} ({job.page_count} trang)"
                 if job.is_scanned:
-                    msg += " — cảnh báo: PDF dạng ảnh, kết quả sẽ không chỉnh sửa được chữ"
+                    msg += (" — PDF dạng ảnh/chữ vector: sẽ nhận dạng chữ (OCR)"
+                            if self.cb_ocr.isChecked()
+                            else " — cảnh báo: PDF dạng ảnh, bật OCR để chỉnh sửa được chữ")
                 self.append_log(msg)
 
     def _inspect(self, pdf: Path) -> ConvertJob | None:
@@ -409,6 +419,7 @@ class MainWindow(QMainWindow):
             page_spec=self.ed_pages.text().strip(),
             overwrite=self.cb_overwrite.isChecked(),
             multi_processing=self.cb_multi.isChecked(),
+            ocr=self.cb_ocr.isChecked(),
         )
 
     @Slot()

@@ -17,6 +17,7 @@ class ConvertOptions:
     page_spec: str = ""  # "" = tất cả trang, ví dụ "1-3, 5"
     overwrite: bool = False
     multi_processing: bool = False
+    ocr: bool = True  # tự nhận dạng chữ (OCR) cho trang dạng ảnh / chữ vector
 
 
 @dataclass

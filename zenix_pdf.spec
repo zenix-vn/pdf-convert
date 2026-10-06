@@ -4,6 +4,13 @@ from PyInstaller.utils.hooks import collect_all
 
 datas, binaries, hiddenimports = collect_all("pdf2docx")
 
+# Dữ liệu OCR tiếng Việt (tải bằng: python tools/fetch_tessdata.py)
+import os
+_TESSDATA = os.path.join("zenix_pdf", "resources", "tessdata")
+if not os.path.isfile(os.path.join(_TESSDATA, "Vietnamese.traineddata")):
+    raise SystemExit("Thiếu dữ liệu OCR: chạy python tools/fetch_tessdata.py trước khi build")
+datas += [(_TESSDATA, _TESSDATA)]
+
 # Loại các module Qt không dùng để giảm dung lượng
 excludes = [
     "PySide6.QtWebEngineCore", "PySide6.QtWebEngineWidgets", "PySide6.QtWebEngineQuick",

@@ -32,12 +32,8 @@ def inspect_pdf(path: str | Path, password: str | None = None) -> PdfInfo:
 
 
 def _looks_scanned(doc, sample: int = 3) -> bool:
-    """PDF dạng ảnh: vài trang đầu không có lớp text nhưng có ảnh."""
+    """Vài trang đầu không có lớp chữ dùng được (ảnh scan/chụp hoặc chữ dạng đường vector)."""
+    from .ocr import page_needs_ocr
+
     n = min(sample, doc.page_count)
-    if n == 0:
-        return False
-    for i in range(n):
-        page = doc[i]
-        if page.get_text("text").strip() or not page.get_images():
-            return False
-    return True
+    return n > 0 and all(page_needs_ocr(doc[i]) for i in range(n))

@@ -51,7 +51,7 @@ class FileTableModel(QAbstractTableModel):
                 if job.status == JobStatus.FAILED:
                     return job.error
                 if job.is_scanned and job.status == JobStatus.PENDING:
-                    return "Cảnh báo: PDF dạng ảnh (scan)"
+                    return "PDF dạng ảnh: cần OCR"
                 return ""
         if role == Qt.ToolTipRole:
             if col == 0:

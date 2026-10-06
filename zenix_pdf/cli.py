@@ -1,4 +1,4 @@
-"""Chế độ dòng lệnh: main.py --convert a.pdf b.pdf [-o OUT] [-p "1-3"] [--overwrite] [--mp]"""
+"""Chế độ dòng lệnh: main.py --convert a.pdf b.pdf [-o OUT] [-p "1-3"] [--overwrite] [--mp] [--no-ocr]"""
 
 import argparse
 import logging
@@ -27,9 +27,10 @@ def run(argv: list[str]) -> int:
     ap.add_argument("--password")
     ap.add_argument("--overwrite", action="store_true")
     ap.add_argument("--mp", action="store_true", help="đa tiến trình")
+    ap.add_argument("--no-ocr", action="store_true", help="không OCR trang dạng ảnh")
     args = ap.parse_args(argv)
 
-    opts = ConvertOptions(args.output_dir, args.pages, args.overwrite, args.mp)
+    opts = ConvertOptions(args.output_dir, args.pages, args.overwrite, args.mp, not args.no_ocr)
     service = PdfConverterService()
     failed = 0
     for pdf in args.pdfs:

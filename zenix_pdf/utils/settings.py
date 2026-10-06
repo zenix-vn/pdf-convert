@@ -54,6 +54,14 @@ class AppSettings:
         self._s.setValue("options/multi_processing", v)
 
     @property
+    def ocr(self) -> bool:
+        return self._bool("options/ocr", True)
+
+    @ocr.setter
+    def ocr(self, v: bool):
+        self._s.setValue("options/ocr", v)
+
+    @property
     def geometry(self):
         return self._s.value("window/geometry")
 
